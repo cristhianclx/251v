@@ -1,0 +1,18 @@
+# https://www.python.org/downloads/
+
+# virtualenv
+
+# 1ra vez
+python -m venv .venv   
+# siempre
+.venv\Scripts\activate.bat # activate.ps
+
+# install
+pip install -r requirements.txt --upgrade
+
+# utils
+pip freeze
+pip install flask
+
+# run
+flask --app main run --reload
