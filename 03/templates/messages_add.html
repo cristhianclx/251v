@@ -4,6 +4,11 @@
     <title>Messages add</title>
 {% endblock %}
 
+{% block head %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
     <h1>Messages add</h1>
     <hr>
@@ -21,12 +26,26 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Content</label>
-        <input type="text" class="form-control" name="content" />
+        <textarea class="form-control" rows="3" name="content" id="content"></textarea>
       </div>
       <div class="mb-3">
         <label class="form-label">Student</label>
-        <input type="text" class="form-control" name="student_id" />
+<select class="form-select" aria-label="Choose a student" name="student_id">
+  <option selected></option>
+  {% for student in students %}
+  <option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+  {% endfor %}
+</select>
       </div>
       <button type="submit" class="btn btn-primary">Save</button>
     </form>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#content').summernote();
+  });
+</script>
 {% endblock %}
