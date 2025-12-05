@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Messages details: {{ item.id }}</title>
+{% endblock %}
+
+{% block body %}
+    <h1>Messages details: {{ item.id }}</h1>
+    <hr>
+    <a class="btn btn-dark" href="{{ url_for('messages') }}">Return to messages</a>
+    <hr>
+    <form>
+      <fieldset disabled>
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" name="title" value="{{ item.title }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Content</label>
+        <input type="text" class="form-control" name="content" value="{{ item.content }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Student</label>
+        <input type="text" class="form-control" name="student_id" value="{{ item.student_id }}" />
+      </div>
+      </fieldset>
+    </form>
+{% endblock %}

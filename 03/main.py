@@ -106,6 +106,58 @@ def students_delete_by_id(id):
         return redirect(url_for('students'))
 
 
+@app.route("/messages/")
+def messages():
+    data = Message.query.all()
+    return render_template("messages.html", items=data)
+
+
+@app.route("/messages/add/", methods=["GET", "POST"])
+def messages_add():
+    if request.method == "GET":
+        return render_template("messages_add.html")
+    if request.method == "POST":
+        item = Message(
+            title=request.form["title"],
+            content=request.form["content"],
+            student_id=request.form["student_id"],
+        )
+        db.session.add(item)
+        db.session.commit()
+        return render_template("messages_add.html", information="Your changes were saved")
+
+
+@app.route("/messages/<id>")
+def messages_by_id(id):
+    data = Message.query.get_or_404(id)
+    return render_template("messages_details.html", item=data)
+
+
+@app.route("/messages/<id>/edit/", methods=["GET", "POST"])
+def messages_edit_by_id(id):
+    data = Message.query.get_or_404(id)
+    if request.method == "GET":
+        return render_template("messages_edit.html", item=data)
+    if request.method == "POST":
+        data.title = request.form["title"]
+        data.content = request.form["content"]
+        data.student_id = request.form["student_id"]
+        db.session.add(data)
+        db.session.commit()
+        return render_template("messages_edit.html", item=data, information="Your changes were saved")
+
+
+@app.route("/messages/<id>/delete/", methods=["GET", "POST"])
+def messages_delete_by_id(id):
+    data = Message.query.get_or_404(id)
+    if request.method == "GET":
+        return render_template("messages_delete.html", item=data)
+    if request.method == "POST":
+        db.session.delete(data)
+        db.session.commit()
+        return redirect(url_for('messages'))
+
+
 # /messages/
 # /messages/add/
 # /messages/1/

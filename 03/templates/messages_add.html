@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Messages add</title>
+{% endblock %}
+
+{% block body %}
+    <h1>Messages add</h1>
+    <hr>
+    <a class="btn btn-dark" href="{{ url_for('messages') }}">Return to messages</a>
+    <hr>
+    {% if information %}
+    <div class="alert alert-dark" role="alert">
+    {{ information }}
+    </div>
+    {% endif %}
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" name="title" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Content</label>
+        <input type="text" class="form-control" name="content" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Student</label>
+        <input type="text" class="form-control" name="student_id" />
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+{% endblock %}

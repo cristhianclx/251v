@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Messages</title>
+{% endblock %}
+
+{% block body %}
+<h1>Messages</h1>
+    <hr>
+    <a class="btn btn-dark" href="{{ url_for('messages_add') }}">Add message</a>
+    <hr>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Content</th>
+          <th scope="col">Student</th>
+          <th scope="col">Created at</th>
+          <th scope="col">Options</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <th scope="row">{{ item.id }}</th>
+          <td>{{ item.title }}</td>
+          <td>{{ item.content }}</td>
+          <td>{{ item.student_id }}</td>
+          <td>{{ item.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+          <td>
+            <a class="btn btn-info" href="{{ url_for('messages_by_id', id=item.id) }}">View</a>
+            <a class="btn btn-primary" href="{{ url_for('messages_edit_by_id', id=item.id) }}">Edit</a>
+            <a class="btn btn-danger" href="{{ url_for('messages_delete_by_id', id=item.id) }}">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endblock %}
