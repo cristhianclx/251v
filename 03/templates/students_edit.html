@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    <title>Students add</title>
+    <title>Students edit: {{ item.id }}</title>
 {% endblock %}
 
 {% block body %}
-    <h1>Students add</h1>
+    <h1>Students edit: {{ item.id }}</h1>
     <hr>
     <a class="btn btn-dark" href="{{ url_for('students') }}">Return to students</a>
     <hr>
@@ -17,24 +17,24 @@
     <form method="POST">
       <div class="mb-3">
         <label class="form-label">First name</label>
-        <input type="text" class="form-control" name="first_name" />
+        <input type="text" class="form-control" name="first_name" value="{{ item.first_name }}" />
       </div>
       <div class="mb-3">
         <label class="form-label">Last name</label>
-        <input type="text" class="form-control" name="last_name" />
+        <input type="text" class="form-control" name="last_name" value="{{ item.last_name }}" />
       </div>
       <div class="mb-3">
         <label class="form-label">Age</label>
-        <input type="text" class="form-control" name="age" />
+        <input type="text" class="form-control" name="age" value="{{ item.age }}" />
       </div>
       <div class="mb-3">
         <label class="form-label">Country</label>
-        <input type="text" class="form-control" name="country" />
+        <input type="text" class="form-control" name="country" value="{{ item.country }}" />
       </div>
       <div class="mb-3">
         <label class="form-label">City</label>
-        <input type="text" class="form-control" name="city" />
+        <input type="text" class="form-control" name="city" value="{{ item.city }}" />
       </div>
       <button type="submit" class="btn btn-primary">Save</button>
     </form>
-{% endblock %}
+    {% endblock %}

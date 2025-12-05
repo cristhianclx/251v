@@ -48,6 +48,5 @@ flask --app main shell
 
 >>> from main import db, Student
 >>> item = Student.query.get_or_404(1)
->>> item.city = "Trujillo"
->>> db.session.add(item)
+>>> db.session.delete(item)
 >>> db.session.commit()

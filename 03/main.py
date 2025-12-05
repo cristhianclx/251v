@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy.sql import func
@@ -70,7 +70,7 @@ def students_add():
         )
         db.session.add(item)
         db.session.commit()
-        return render_template("students_add.html", information="Your changes are saved")
+        return render_template("students_add.html", information="Your changes were saved")
 
 
 @app.route("/students/<id>")
@@ -79,10 +79,35 @@ def students_by_id(id):
     return render_template("students_details.html", item=data)
 
 
-# CRUD
-# U: update one student
-# D: delete one student
+@app.route("/students/<id>/edit/", methods=["GET", "POST"])
+def students_edit_by_id(id):
+    data = Student.query.get_or_404(id)
+    if request.method == "GET":
+        return render_template("students_edit.html", item=data)
+    if request.method == "POST":
+        data.first_name = request.form["first_name"]
+        data.last_name = request.form["last_name"]
+        data.age = request.form["age"]
+        data.country = request.form["country"]
+        data.city = request.form["city"]
+        db.session.add(data)
+        db.session.commit()
+        return render_template("students_edit.html", item=data, information="Your changes were saved")
 
-# /students/
-# /students/add/
-# /students/1/
+
+@app.route("/students/<id>/delete/", methods=["GET", "POST"])
+def students_delete_by_id(id):
+    data = Student.query.get_or_404(id)
+    if request.method == "GET":
+        return render_template("students_delete.html", item=data)
+    if request.method == "POST":
+        db.session.delete(data)
+        db.session.commit()
+        return redirect(url_for('students'))
+
+
+# /messages/
+# /messages/add/
+# /messages/1/
+# /messages/1/edit/
+# /messages/1/delete/
