@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy.sql import func
@@ -43,9 +43,22 @@ class Message(db.Model):
         return "<Message: {}>".format(self.id) # <Message: 1>
 
 
-
 @app.route("/status/")
 def status():
     return {
         "status": "live"
     }
+
+
+@app.route("/students/")
+def students():
+    data = Student.query.all()
+    return render_template("students.html", items=data)
+
+
+
+# CRUD
+# C: create student
+# R: read one student
+# U: update one student
+# D: delete one student
