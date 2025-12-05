@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy.sql import func
@@ -56,9 +56,33 @@ def students():
     return render_template("students.html", items=data)
 
 
+@app.route("/students/add/", methods=["GET", "POST"])
+def students_add():
+    if request.method == "GET":
+        return render_template("students_add.html")
+    if request.method == "POST":
+        item = Student(
+            first_name=request.form["first_name"],
+            last_name=request.form["last_name"],
+            age=request.form["age"],
+            country=request.form["country"],
+            city=request.form["city"],
+        )
+        db.session.add(item)
+        db.session.commit()
+        return render_template("students_add.html", information="Your changes are saved")
+
+
+@app.route("/students/<id>")
+def students_by_id(id):
+    data = Student.query.get_or_404(id)
+    return render_template("students_details.html", item=data)
+
 
 # CRUD
-# C: create student
-# R: read one student
 # U: update one student
 # D: delete one student
+
+# /students/
+# /students/add/
+# /students/1/
