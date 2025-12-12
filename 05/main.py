@@ -33,17 +33,18 @@ class User(db.Model):
         return "<User: {}>".format(self.id) # <User: 1>
 
 
-class User2Schema(ma.SQLAlchemySchema):
+class UserPublicSchema(ma.SQLAlchemySchema):
     id = ma.auto_field()
     first_name = ma.auto_field()
     last_name = ma.auto_field()
-    age = ma.auto_field()
-    country = ma.auto_field()
-    city = ma.auto_field()
 
     class Meta:
         model = User
         datetimeformat = "%Y-%m-%d %H:%M:%S"
+
+
+user_public_schema = UserPublicSchema()
+users_public_schema = UserPublicSchema(many = True)
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
@@ -90,6 +91,12 @@ class StatusResource(Resource):
         }
 
 
+class UsersPublicResource(Resource):
+    def get(self):
+        items = User.query.all()
+        return users_public_schema.dump(items)
+
+
 class UsersResource(Resource):
     def get(self):
         items = User.query.all()
@@ -118,4 +125,5 @@ class MessagesResource(Resource):
 
 api.add_resource(StatusResource, "/status/")
 api.add_resource(UsersResource, "/users/")
+api.add_resource(UsersPublicResource, "/users/public/")
 api.add_resource(MessagesResource, "/messages/")
