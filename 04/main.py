@@ -19,12 +19,15 @@ class PokemonByNameResource(Resource):
     def get(self, name):
         raw = requests.get("https://pokeapi.co/api/v2/pokemon/{}".format(name))
         data = raw.json()
+        moves = []
+        for m in data["moves"]:
+            moves.append(m["move"]["name"])
         return {
             "name": name,
             "experience": data["base_experience"],
-            "height": "",
-            "weight":"",
-            "moves": ""
+            "height": data["height"],
+            "weight": data["weight"],
+            "moves": moves,
         }
 
 
