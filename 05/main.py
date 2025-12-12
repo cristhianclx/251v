@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+ma = Marshmallow(app)
 
 api = Api(app)
 
@@ -30,6 +33,29 @@ class User(db.Model):
         return "<User: {}>".format(self.id) # <User: 1>
 
 
+class User2Schema(ma.SQLAlchemySchema):
+    id = ma.auto_field()
+    first_name = ma.auto_field()
+    last_name = ma.auto_field()
+    age = ma.auto_field()
+    country = ma.auto_field()
+    city = ma.auto_field()
+
+    class Meta:
+        model = User
+        datetimeformat = "%Y-%m-%d %H:%M:%S"
+
+
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+        datetimeformat = "%Y-%m-%d %H:%M:%S"
+
+
+user_schema = UserSchema()
+users_schema = UserSchema(many = True)
+
+
 class Message(db.Model):
 
     __tablename__ = "messages"
@@ -46,6 +72,17 @@ class Message(db.Model):
         return "<Message: {}>".format(self.id) # <Message: 1>
 
 
+class MessageSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Message
+        include_fk = True
+        datetimeformat = "%Y-%m-%d %H:%M:%S"
+
+
+message_schema = MessageSchema()
+messages_schema = MessageSchema(many = True)
+
+
 class StatusResource(Resource):
     def get(self):
         return {
@@ -56,35 +93,29 @@ class StatusResource(Resource):
 class UsersResource(Resource):
     def get(self):
         items = User.query.all()
-        new_data = []
-        for item in items:
-            new_data.append({
-                "id": item.id,
-                "first_name": item.first_name,
-                "last_name": item.last_name,
-                "age": item.age,
-                "country": item.country,
-                "city": item.city,
-                "created_at": item.created_at.strftime("%Y-%m-%d %H:%M:%S")
-            })
-        return new_data
+        return users_schema.dump(items)
     
     def post(self):
         data = request.get_json()
         item = User(**data)
         db.session.add(item)
         db.session.commit()
-        return {
-            "id": item.id,
-            "first_name": item.first_name,
-            "last_name": item.last_name,
-            "age": item.age,
-            "country": item.country,
-            "city": item.city,
-            "created_at": item.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        }, 201
+        return user_schema.dump(item), 201
+
+
+class MessagesResource(Resource):
+    def get(self):
+        items = Message.query.all()
+        return messages_schema.dump(items)
+    
+    def post(self):
+        data = request.get_json()
+        item = Message(**data)
+        db.session.add(item)
+        db.session.commit()
+        return message_schema.dump(item), 201
 
 
 api.add_resource(StatusResource, "/status/")
 api.add_resource(UsersResource, "/users/")
-# LABORATORIO: /messages/ (POST, GET)
+api.add_resource(MessagesResource, "/messages/")
