@@ -50,13 +50,3 @@ flask --app main shell
 >>> item = User.query.get_or_404(1)
 >>> db.session.delete(item)
 >>> db.session.commit()
-
-# utils
-
-black file.py
-black file.py --diff
-flake8 file.py
-
-# wsgi
-
-gunicorn -k gevent -w 8 main:app
