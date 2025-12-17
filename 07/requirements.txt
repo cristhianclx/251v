@@ -1,0 +1,6 @@
+Flask==3.1.2
+flask-jwt-extended
+Flask-Migrate
+Flask-SQLAlchemy
+flask-marshmallow==1.3.0
+marshmallow-sqlalchemy
