@@ -1,6 +1,7 @@
 Flask==3.1.2
 flask-marshmallow==1.3.0
 Flask-Migrate
+flask-restful-swagger-3
 Flask-SQLAlchemy
 flask-restful
 marshmallow-sqlalchemy

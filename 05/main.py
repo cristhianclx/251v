@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
-from flask_restful import Api, Resource
+from flask_restful_swagger_3 import swagger,Api,Resource
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 
@@ -88,6 +88,7 @@ messages_schema = MessageSchema(many = True)
 
 
 class StatusResource(Resource):
+    @swagger.tags(['status'])
     def get(self):
         return {
             "status": "live"
