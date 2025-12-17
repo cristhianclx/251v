@@ -74,6 +74,17 @@ class Message(db.Model):
         return "<Message: {}>".format(self.id) # <Message: 1>
 
 
+class MessageBasicSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Message
+        load_instance = True
+        datetimeformat = "%Y-%m-%d %H:%M:%S"
+
+
+message_basic_schema = MessageBasicSchema()
+messages_basic_schema = MessageBasicSchema(many = True)
+
+
 class MessageSchema(ma.SQLAlchemyAutoSchema):
     user = ma.Nested(UserPublicSchema)
 
@@ -173,17 +184,26 @@ class MessageIDResource(Resource):
         return {}, 204
     
 
+class UserIDMessagesResource(Resource):
+    def get(self, user_id):
+        user = User.query.get_or_404(user_id)
+        items = Message.query.filter_by(user = user).all()
+        return messages_basic_schema.dump(items)
+
+    def post(self, user_id):
+        user = User.query.get_or_404(user_id)
+        data = request.get_json()
+        item = Message(**data)
+        item.user = user
+        db.session.add(item)
+        db.session.commit()
+        return message_basic_schema.dump(item), 201
+
+
 api.add_resource(StatusResource, "/status/")
 api.add_resource(UsersResource, "/users/")
 api.add_resource(UserIDResource, "/users/<int:id>")
 api.add_resource(UsersPublicResource, "/users/public/")
 api.add_resource(MessagesResource, "/messages/")
 api.add_resource(MessageIDResource, "/messages/<int:id>")
-
-# LABORARIO
-# URL
-# /users/<int:user_id>/messages/
-# GET: TODOS LOS MENSAJES del USUARIO id=1
-#   user = User.query.get_or_404(1)
-#   items = Message.query.filter_by(user = user).all()
-# POST: CREAR UN MENSAJE ASOCIADO AL USUARIO id=1
+api.add_resource(UserIDMessagesResource, "/users/<int:user_id>/messages/")
