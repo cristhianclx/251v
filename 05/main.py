@@ -73,7 +73,13 @@ class Message(db.Model):
         return "<Message: {}>".format(self.id) # <Message: 1>
 
 
-class MessageSchema(ma.SQLAlchemyAutoSchema):
+class MessageSchema(ma.SQLAlchemySchema):
+    id = ma.auto_field()
+    title = ma.auto_field()
+    content = ma.auto_field()
+    created_at = ma.auto_field()
+    user = UserSchema()
+
     class Meta:
         model = Message
         include_fk = True
@@ -110,6 +116,30 @@ class UsersResource(Resource):
         return user_schema.dump(item), 201
 
 
+class UserIDResource(Resource):
+    def get(self, id):
+        item = User.query.get_or_404(id)
+        return user_schema.dump(item)
+    
+    def patch(self, id):
+        item = User.query.get_or_404(id)
+        data = request.get_json()
+        item.first_name = data.get("first_name", item.first_name)
+        item.last_name = data.get("last_name", item.last_name)
+        item.age = data.get("age", item.age)
+        item.country = data.get("country", item.country)
+        item.city = data.get("city", item.city)
+        db.session.add(item)
+        db.session.commit()
+        return user_schema.dump(item)
+    
+    def delete(self, id):
+        item = User.query.get_or_404(id)
+        db.session.delete(item)
+        db.session.commit()
+        return {}, 204
+
+
 class MessagesResource(Resource):
     def get(self):
         items = Message.query.all()
@@ -125,5 +155,18 @@ class MessagesResource(Resource):
 
 api.add_resource(StatusResource, "/status/")
 api.add_resource(UsersResource, "/users/")
+api.add_resource(UserIDResource, "/users/<int:id>")
 api.add_resource(UsersPublicResource, "/users/public/")
 api.add_resource(MessagesResource, "/messages/")
+
+
+#REST=JSON
+  
+#OK #C => POST /users => 201,{id:3,name:cristhian}
+#OK #R => GET /users => 200,[{id:2,name:cristhian},{id:3,name:cristhian}]
+#OK #R => GET /users/<id> => 200,{id:3,name:cristhian}
+#OK #U => PATCH(partial)/PUT /users/<id> => 200,{id:3,name:cristhian}
+#OK #D => DELETE /users/<id> => 204,(         )
+
+# LABORATORIO
+# /messages/<id> (GET,PATCH,DELETE)
