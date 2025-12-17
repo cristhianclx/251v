@@ -96,7 +96,10 @@ def me():
 @jwt_required()
 def messages():
     username = get_jwt_identity()
-    # LABORARIO
-    # completar este EP, y si el usuario es superuser devolver todos los mensajes
-    # si el usuario es otro, devolver los mensajes de ese usuario
-    return {}
+    if username == "superuser":
+        items = Message.query.all()
+        return messages_basic_schema.dump(items)
+    else:
+        user = User.query.filter_by(first_name = username).first()
+        items = Message.query.filter_by(user = user).all()
+        return message_basic_schema.dump(items)
