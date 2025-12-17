@@ -179,3 +179,11 @@ api.add_resource(UserIDResource, "/users/<int:id>")
 api.add_resource(UsersPublicResource, "/users/public/")
 api.add_resource(MessagesResource, "/messages/")
 api.add_resource(MessageIDResource, "/messages/<int:id>")
+
+# LABORARIO
+# URL
+# /users/<int:user_id>/messages/
+# GET: TODOS LOS MENSAJES del USUARIO id=1
+#   user = User.query.get_or_404(1)
+#   items = Message.query.filter_by(user = user).all()
+# POST: CREAR UN MENSAJE ASOCIADO AL USUARIO id=1
